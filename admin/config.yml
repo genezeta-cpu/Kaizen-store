@@ -1,0 +1,91 @@
+backend:
+  name: git-gateway
+  branch: main
+
+local_backend: false
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "products"
+    label: "Catálogo"
+    files:
+      - name: "products"
+        label: "Productos"
+        file: "data/products.json"
+        fields:
+          - label: "Productos"
+            name: "products"
+            widget: "list"
+            summary: "{{fields.name}} — {{fields.category}}"
+            fields:
+              - { label: "ID (número único, no repetir)", name: "id", widget: "number", value_type: "int" }
+              - { label: "Nombre", name: "name", widget: "string" }
+              - label: "Categoría"
+                name: "category"
+                widget: "select"
+                options:
+                  - "Música"
+                  - "Ofertas"
+                  - "Productividad"
+                  - "Streaming"
+                  - "TV en Vivo"
+                  - "Utilidades"
+              - { label: "Descripción", name: "desc", widget: "text" }
+              - { label: "Imagen / Logo", name: "image", widget: "image", required: false, choose_url: true }
+              - label: "Opciones (duración y precio)"
+                name: "options"
+                widget: "list"
+                summary: "{{fields.label}} — ${{fields.price}}"
+                fields:
+                  - { label: "Duración (ej: 1 Mes, 12 Meses)", name: "label", widget: "string" }
+                  - { label: "Precio", name: "price", widget: "number" }
+
+  - name: "settings"
+    label: "Configuración general"
+    files:
+      - name: "settings"
+        label: "Configuración"
+        file: "data/settings.json"
+        fields:
+          - { label: "Número de WhatsApp (con código de país, sin +)", name: "whatsappNumber", widget: "string" }
+          - { label: "Alias de pago", name: "paymentAlias", widget: "string" }
+          - { label: "CBU / CVU", name: "paymentCbu", widget: "string" }
+          - { label: "Titular de la cuenta", name: "paymentTitular", widget: "string" }
+
+          - label: "Categorías del catálogo"
+            name: "categories"
+            widget: "list"
+            field: { label: "Categoría", name: "category", widget: "string" }
+
+          - label: "Turnos de atención (lunes a viernes)"
+            name: "shifts"
+            widget: "list"
+            summary: "{{fields.open}} a {{fields.close}}"
+            fields:
+              - { label: "Apertura (HH:MM)", name: "open", widget: "string" }
+              - { label: "Cierre (HH:MM)", name: "close", widget: "string" }
+
+          - label: "Feriados (cerrado todo el día)"
+            name: "holidays"
+            widget: "list"
+            summary: "{{fields.date}}"
+            fields:
+              - { label: "Fecha (AAAA-MM-DD)", name: "date", widget: "string" }
+
+          - label: "Preguntas frecuentes"
+            name: "faqs"
+            widget: "list"
+            summary: "{{fields.q}}"
+            fields:
+              - { label: "Pregunta", name: "q", widget: "string" }
+              - { label: "Respuesta", name: "a", widget: "text" }
+
+          - label: "Texto 'Sobre Kaizen Store' — primer párrafo"
+            name: "aboutText1"
+            widget: "text"
+
+          - label: "Texto 'Sobre Kaizen Store' — segundo párrafo"
+            name: "aboutText2"
+            widget: "text"

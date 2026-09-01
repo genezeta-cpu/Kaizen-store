@@ -1,0 +1,43 @@
+{
+  "whatsappNumber": "5491134973142",
+  "paymentAlias": "kaizenstore.777",
+  "paymentCbu": "1430001713028273670010",
+  "paymentTitular": "Gonzalo Ezequiel Barraza",
+  "categories": [
+    "Música",
+    "Ofertas",
+    "Productividad",
+    "Streaming",
+    "TV en Vivo",
+    "Utilidades"
+  ],
+  "shifts": [
+    { "open": "09:30", "close": "14:00" },
+    { "open": "17:30", "close": "22:00" }
+  ],
+  "holidays": [
+    { "date": "2026-01-01" },
+    { "date": "2026-02-16" },
+    { "date": "2026-02-17" },
+    { "date": "2026-03-24" },
+    { "date": "2026-04-02" },
+    { "date": "2026-04-03" },
+    { "date": "2026-05-01" },
+    { "date": "2026-05-25" },
+    { "date": "2026-06-17" },
+    { "date": "2026-06-20" },
+    { "date": "2026-07-09" },
+    { "date": "2026-08-17" },
+    { "date": "2026-10-12" },
+    { "date": "2026-12-08" },
+    { "date": "2026-12-25" }
+  ],
+  "faqs": [
+    { "q": "¿Las licencias son originales?", "a": "Sí, todas nuestras licencias son originales y contamos con autorización para su reventa." },
+    { "q": "¿Cómo recibo mi licencia después de comprar?", "a": "Una vez que enviás tu pedido por WhatsApp, coordinamos el pago y te entregamos la licencia junto con instrucciones de activación." },
+    { "q": "¿Qué medios de pago aceptan?", "a": "Coordinamos el medio de pago directamente por WhatsApp al confirmar tu pedido." },
+    { "q": "¿Tienen garantía?", "a": "Sí, todas las licencias cuentan con garantía de activación. Si tenés algún problema, escribinos por WhatsApp." }
+  ],
+  "aboutText1": "Somos una tienda especializada en licencias originales de software, con autorización para su reventa. Nuestro objetivo es que accedas a las herramientas que necesitás sin pagar de más, con la tranquilidad de que todo lo que vendemos es legítimo.",
+  "aboutText2": "Trabajamos con proveedores autorizados y cada licencia que entregamos cuenta con el respaldo correspondiente. La idea de \"Kaizen\" es la mejora continua — así encaramos también la atención a nuestros clientes."
+}

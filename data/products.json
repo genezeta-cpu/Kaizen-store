@@ -1,0 +1,47 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Adobe Creative Cloud - Completo",
+      "category": "Productividad",
+      "desc": "Acceso a todas las apps de Adobe: Photoshop, Illustrator, Premiere, After Effects y más.",
+      "image": "",
+      "options": [
+        { "label": "1 Mes", "price": 0 },
+        { "label": "6 Meses", "price": 0 },
+        { "label": "12 Meses", "price": 0 }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Adobe Photoshop",
+      "category": "Productividad",
+      "desc": "Licencia individual de Photoshop, edición y retoque fotográfico profesional.",
+      "image": "",
+      "options": [
+        { "label": "1 Mes", "price": 0 },
+        { "label": "12 Meses", "price": 0 }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Antivirus Premium",
+      "category": "Utilidades",
+      "desc": "Licencia original de antivirus con protección completa multi-dispositivo.",
+      "image": "",
+      "options": [
+        { "label": "1 Año", "price": 0 }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Microsoft Office 365",
+      "category": "Productividad",
+      "desc": "Licencia anual de Office 365 con Word, Excel, PowerPoint y Outlook.",
+      "image": "",
+      "options": [
+        { "label": "12 Meses", "price": 0 }
+      ]
+    }
+  ]
+}
