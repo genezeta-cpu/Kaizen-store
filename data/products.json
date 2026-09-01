@@ -2,52 +2,48 @@
   "products": [
     {
       "id": 1,
-      "name": "Adobe Creative Cloud - Completo",
-      "category": "Productividad",
-      "desc": "Acceso a todas las apps de Adobe: Photoshop, Illustrator, Premiere, After Effects y más.",
+      "name": "2 PLATAFORMAS (1 pantalla c/u | 30 días)",
+      "category": "Ofertas",
+      "desc": "...",
       "image": "",
       "options": [
         {
-          "label": "1 Mes",
-          "price": 0
+          "label": "Max + Prime",
+          "price": 3400
         },
         {
-          "label": "6 Meses",
-          "price": 0
+          "label": "Disney Hulu + Max",
+          "price": 4400
         },
         {
-          "label": "12 Meses",
-          "price": 0
+          "label": "IPTV + Disney Hulu",
+          "price": 7200
         }
       ]
     },
     {
       "id": 2,
-      "name": "Adobe Photoshop",
-      "category": "Productividad",
-      "desc": "Licencia individual de Photoshop, edición y retoque fotográfico profesional.",
+      "name": "3 PLATAFORMAS (1 pantalla c/u | 30 días)",
+      "category": "Ofertas",
+      "desc": "....",
       "image": "",
       "options": [
         {
-          "label": "1 Mes",
-          "price": 0
-        },
-        {
-          "label": "12 Meses",
-          "price": 0
+          "label": "IPTV + Max + Disney Hulu",
+          "price": 8600
         }
       ]
     },
     {
       "id": 3,
-      "name": "Antivirus Premium",
-      "category": "Utilidades",
-      "desc": "Licencia original de antivirus con protección completa multi-dispositivo.",
+      "name": "PACK CREADORES",
+      "category": "Ofertas",
+      "desc": "....",
       "image": "",
       "options": [
         {
-          "label": "1 Año",
-          "price": 0
+          "label": "Canva + Deezer",
+          "price": 3800
         }
       ]
     },
@@ -56,7 +52,7 @@
       "name": "Microsoft Office 365",
       "category": "Productividad",
       "desc": "Licencia anual de Office 365 con Word, Excel, PowerPoint y Outlook.",
-      "image": "/images/uploads/vecteezy_microsoft-365-logo-vector-vector-microsoft-365-editorial_.jpg",
+      "image": "",
       "options": [
         {
           "label": "12 Meses",
