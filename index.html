@@ -4,6 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kaizen Store</title>
+<!-- Necesario para que los links de invitación / recuperación de contraseña de Netlify Identity
+     funcionen cuando redirigen a la página principal en vez de a /admin/ -->
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script>
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on("init", user => {
+      // Si el usuario recién confirmó su cuenta (invitación) o recuperó su contraseña,
+      // después de completar el cartel lo mandamos directo al panel de admin.
+      window.netlifyIdentity.on("login", () => {
+        document.location.href = "/admin/";
+      });
+    });
+  }
+</script>
 <style>
   :root{
     --bg: #0b0b0d;
