@@ -109,9 +109,10 @@
   .hero{
     padding:90px 32px;
     text-align:center;
-    background: radial-gradient(circle at 50% 0%, rgba(214,34,47,0.12), transparent 60%);
+    background:
+      radial-gradient(circle at 50% 0%, rgba(214,34,47,0.12), transparent 60%),
+      var(--bg);
     border-bottom:1px solid var(--line);
-    position:relative;
   }
   .hero h1{font-size:42px; font-weight:800; letter-spacing:0.5px; margin-bottom:14px;}
   .hero h1 span{color:var(--red);}
@@ -397,65 +398,10 @@
     .detail-panel{position:static;}
     .status-pill .status-text span.long-label{display:none;}
   }
-  /* ---------- FONDO ANIMADO (burbujas rojas difuminadas) ---------- */
-  .bg-blobs{
-    position:fixed; inset:0; overflow:hidden; z-index:0; pointer-events:none;
-  }
-  .blob{
-    position:absolute; border-radius:50%;
-    filter:blur(80px); opacity:0.35; will-change:transform;
-  }
-  .blob1{
-    width:480px; height:480px; top:-140px; left:-120px;
-    background:var(--red); animation:float1 22s ease-in-out infinite;
-  }
-  .blob2{
-    width:420px; height:420px; bottom:-120px; right:-100px;
-    background:var(--red-dim); opacity:0.4; animation:float2 26s ease-in-out infinite;
-  }
-  .blob3{
-    width:340px; height:340px; top:40%; left:62%;
-    background:var(--red); opacity:0.25; animation:float3 30s ease-in-out infinite;
-  }
-  .blob4{
-    width:300px; height:300px; top:10%; left:30%;
-    background:var(--red-dim); opacity:0.22; animation:float4 18s ease-in-out infinite;
-  }
-  @keyframes float1{
-    0%,100%{ transform:translate(0,0) scale(1); }
-    50%{ transform:translate(160px,110px) scale(1.15); }
-  }
-  @keyframes float2{
-    0%,100%{ transform:translate(0,0) scale(1); }
-    50%{ transform:translate(-130px,-90px) scale(1.2); }
-  }
-  @keyframes float3{
-    0%,100%{ transform:translate(0,0) scale(1); }
-    50%{ transform:translate(-110px,90px) scale(0.85); }
-  }
-  @keyframes float4{
-    0%,100%{ transform:translate(0,0) scale(1); }
-    50%{ transform:translate(100px,-80px) scale(1.25); }
-  }
-  @media (prefers-reduced-motion: reduce){
-    .blob{ animation:none !important; }
-  }
-
-  /* Todo el contenido real va por encima del fondo animado */
-  header, .view, footer, .cart-overlay, .cart-panel, .checkout-overlay, .checkout-modal{
-    position:relative; z-index:1;
-  }
 
 </style>
 </head>
 <body>
-
-<div class="bg-blobs" aria-hidden="true">
-  <div class="blob blob1"></div>
-  <div class="blob blob2"></div>
-  <div class="blob blob3"></div>
-  <div class="blob blob4"></div>
-</div>
 
 <header>
   <div class="brand" onclick="showView('home')">
