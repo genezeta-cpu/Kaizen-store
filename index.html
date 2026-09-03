@@ -383,6 +383,32 @@
   }
   .warning-box b{color:#fff;}
 
+  /* ---------- BLOQUE "TIENDA CERRADA" (pedido pendiente) ---------- */
+  .closed-order-box{
+    background:rgba(230,161,58,0.08); border:1px solid var(--gold); border-radius:10px;
+    padding:16px; margin-bottom:14px;
+  }
+  .closed-order-title{font-size:14px; font-weight:800; margin-bottom:8px;}
+  .closed-order-text{font-size:12px; color:var(--gray); line-height:1.5; margin-bottom:12px;}
+  .cf-field{margin-bottom:10px;}
+  .cf-field input{
+    width:100%; background:var(--bg-card); border:1px solid var(--line); color:#fff;
+    padding:10px 12px; border-radius:8px; font-size:13px;
+  }
+  .cf-field input:focus{outline:1px solid var(--gold);}
+  .reserve-btn{
+    width:100%; background:var(--gold); color:#1a1200; border:none;
+    padding:13px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; margin-top:4px;
+  }
+  .reserve-btn:hover{background:#f0b04e;}
+  .reserve-btn:disabled{background:var(--line); color:var(--gray); cursor:not-allowed;}
+  .cf-error{color:#f4a9ae; font-size:12px; margin-top:8px;}
+  .order-number-box{
+    background:var(--bg-card); border:1px solid var(--gold); border-radius:8px;
+    padding:14px; text-align:center; margin-bottom:10px;
+  }
+  .order-number{font-size:24px; font-weight:800; color:var(--gold); letter-spacing:1px;}
+
   @media (max-width: 860px){
     nav{display:none;}
     .burger{display:block;}
@@ -561,6 +587,48 @@
     <span id="coStatusText"></span>
   </div>
 
+  <!-- Este bloque solo se muestra cuando la tienda está CERRADA -->
+  <div class="closed-order-box" id="closedOrderBox" style="display:none;">
+    <div class="closed-order-title">🕒 Estamos cerrados en este momento</div>
+    <p class="closed-order-text">
+      Podés dejar tu pedido reservado ahora y lo procesamos apenas volvamos a abrir.
+      Vas a recibir un <b>número de pedido</b> para identificarlo cuando envíes el comprobante.
+    </p>
+
+    <div id="closedOrderForm">
+      <div class="cf-field">
+        <div class="tf-label">Tu nombre</div>
+        <input type="text" id="closedName" placeholder="Nombre y apellido">
+      </div>
+      <div class="cf-field">
+        <div class="tf-label">Tu WhatsApp</div>
+        <input type="text" id="closedPhone" placeholder="Ej: 5491122334455">
+      </div>
+      <button class="reserve-btn" onclick="reservePendingOrder()">Reservar pedido para cuando abramos</button>
+      <div class="cf-error" id="closedFormError"></div>
+    </div>
+
+    <div id="closedOrderConfirm" style="display:none;">
+      <div class="order-number-box">
+        <div class="tf-label">Tu número de pedido</div>
+        <div class="order-number" id="generatedOrderNumber">—</div>
+      </div>
+      <p class="closed-order-text">Guardá este número. Cuando envíes el comprobante por WhatsApp, mencionalo para que sepamos a quién entregarle el pedido.</p>
+    </div>
+  </div>
+
+  <!-- Formulario oculto: le permite a Netlify detectar y guardar los pedidos pendientes.
+       Se ve en Netlify > tu sitio > pestaña "Forms" > "pedidos-pendientes". -->
+  <form name="pedidos-pendientes" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="text" name="orderNumber" />
+    <input type="text" name="customerName" />
+    <input type="text" name="customerPhone" />
+    <input type="text" name="items" />
+    <input type="text" name="total" />
+    <input type="text" name="date" />
+    <input type="text" name="bot-field" />
+  </form>
+
   <div class="co-section" id="couponSection">
     <div class="co-section-head" onclick="toggleCoSection('couponSection')">
       <span class="co-arrow">▶</span> ¿Tenés un cupón?
@@ -596,10 +664,10 @@
     </div>
   </div>
 
-  <button class="whatsapp-step-btn" onclick="checkout()">
+  <button class="whatsapp-step-btn" id="normalCheckoutBtn" onclick="checkout()">
     💬 Paso 2 · Enviar pedido por WhatsApp
   </button>
-  <div class="step3-note">Paso 3: mandanos el comprobante por WhatsApp junto con el carrito.</div>
+  <div class="step3-note" id="normalCheckoutNote">Paso 3: mandanos el comprobante por WhatsApp junto con el carrito.</div>
 
   <div class="total-box">
     <div class="tb-label">Total a pagar</div>
@@ -1040,7 +1108,29 @@ function openCheckout(){
     stockList.appendChild(line);
   });
 
-  updateCheckoutStatus();
+  // Reset del formulario de reserva cada vez que se abre el checkout
+  document.getElementById("closedName").value = "";
+  document.getElementById("closedPhone").value = "";
+  document.getElementById("closedFormError").textContent = "";
+  document.getElementById("closedOrderForm").style.display = "block";
+  document.getElementById("closedOrderConfirm").style.display = "none";
+
+  const status = computeBusinessStatus();
+  const closedBox = document.getElementById("closedOrderBox");
+  const normalBtn = document.getElementById("normalCheckoutBtn");
+  const normalNote = document.getElementById("normalCheckoutNote");
+
+  if (status.isOpen){
+    closedBox.style.display = "none";
+    normalBtn.style.display = "flex";
+    normalNote.style.display = "block";
+  } else {
+    closedBox.style.display = "block";
+    normalBtn.style.display = "none";
+    normalNote.style.display = "none";
+  }
+
+  updateCheckoutStatus(status);
 }
 
 function closeCheckout(){
@@ -1094,6 +1184,94 @@ function checkout(){
   message += `%0ATotal: ${formatPrice(total)}`;
   const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
   window.open(url, "_blank");
+}
+
+/* ---------- PEDIDOS PENDIENTES (cuando la tienda está cerrada) ---------- */
+
+function generateOrderNumber(){
+  const now = new Date();
+  const y = now.getFullYear().toString().slice(-2);
+  const m = (now.getMonth()+1).toString().padStart(2,"0");
+  const d = now.getDate().toString().padStart(2,"0");
+  const rand = Math.floor(100 + Math.random()*900); // 3 dígitos
+  return `KZ-${y}${m}${d}-${rand}`;
+}
+
+function encodeFormData(data){
+  return Object.keys(data).map(k => encodeURIComponent(k) + "=" + encodeURIComponent(data[k])).join("&");
+}
+
+/* Guarda el pedido en Netlify Forms (visible en tu panel de Netlify > pestaña "Forms") */
+function submitToNetlifyForm(payload){
+  return fetch("/", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: encodeFormData({ "form-name": "pedidos-pendientes", ...payload })
+  });
+}
+
+function reservePendingOrder(){
+  const name = document.getElementById("closedName").value.trim();
+  const phone = document.getElementById("closedPhone").value.trim();
+  const errorEl = document.getElementById("closedFormError");
+
+  if (!name || !phone){
+    errorEl.textContent = "Completá tu nombre y tu WhatsApp para reservar el pedido.";
+    return;
+  }
+  errorEl.textContent = "";
+
+  const keys = Object.keys(cart);
+  if (keys.length === 0) return;
+
+  const orderNumber = generateOrderNumber();
+  let itemsText = "";
+  let total = 0;
+  keys.forEach(key => {
+    const { product, option } = getCartLine(key);
+    const qty = cart[key];
+    const lineTotal = option.price * qty;
+    total += lineTotal;
+    itemsText += `${product.name} (${option.label}) x${qty} - ${formatPrice(lineTotal)}; `;
+  });
+
+  const btn = document.querySelector(".reserve-btn");
+  btn.disabled = true;
+  btn.textContent = "Reservando...";
+
+  submitToNetlifyForm({
+    orderNumber: orderNumber,
+    customerName: name,
+    customerPhone: phone,
+    items: itemsText,
+    total: formatPrice(total),
+    date: new Date().toLocaleString("es-AR", { timeZone: "America/Argentina/Buenos_Aires" })
+  })
+  .then(() => {
+    // Mostrar el número de pedido en el modal
+    document.getElementById("generatedOrderNumber").textContent = orderNumber;
+    document.getElementById("closedOrderForm").style.display = "none";
+    document.getElementById("closedOrderConfirm").style.display = "block";
+
+    // Avisar también por WhatsApp con el número de pedido incluido
+    let message = `¡Hola Kaizen Store! Quiero reservar este pedido para cuando abran (fuera de horario):%0A%0A`;
+    message += `Número de pedido: *${orderNumber}*%0A`;
+    message += `Nombre: ${name}%0A`;
+    message += `WhatsApp: ${phone}%0A%0A`;
+    keys.forEach(key => {
+      const { product, option } = getCartLine(key);
+      const qty = cart[key];
+      const lineTotal = option.price * qty;
+      message += `• ${product.name} (${option.label}) x${qty} - ${formatPrice(lineTotal)}%0A`;
+    });
+    message += `%0ATotal: ${formatPrice(total)}`;
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, "_blank");
+  })
+  .catch(() => {
+    errorEl.textContent = "No se pudo reservar el pedido. Probá de nuevo o escribinos directo por WhatsApp.";
+    btn.disabled = false;
+    btn.textContent = "Reservar pedido para cuando abramos";
+  });
 }
 
 /* ---------- CARGA DE DATOS (products.json + settings.json) ---------- */
