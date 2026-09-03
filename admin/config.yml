@@ -34,6 +34,7 @@ collections:
                   - "Utilidades"
               - { label: "Descripción", name: "desc", widget: "text" }
               - { label: "Imagen / Logo", name: "image", widget: "image", required: false, choose_url: true }
+              - { label: "¿Hay stock?", name: "inStock", widget: "boolean", default: true, hint: "Desmarcá esto cuando se agote — el producto va a aparecer atenuado con la etiqueta 'Agotado' y no se va a poder comprar." }
               - label: "Opciones (duración y precio)"
                 name: "options"
                 widget: "list"

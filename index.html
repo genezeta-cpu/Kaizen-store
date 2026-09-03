@@ -183,6 +183,18 @@
   .product-row .row-info .row-meta{font-size:11px; color:var(--gray);}
   .product-row .row-price{font-weight:800; color:var(--red); font-size:14px; white-space:nowrap;}
 
+  .product-row.out-of-stock{opacity:0.45; filter:grayscale(0.5);}
+  .product-row.out-of-stock:hover{border-color:var(--line); transform:none;}
+  .stock-badge{
+    font-size:11px; font-weight:800; color:#c93b45; text-transform:uppercase; letter-spacing:0.4px;
+  }
+  .detail-stock-badge{margin-bottom:14px; display:inline-block;}
+  .muted-image{filter:grayscale(0.6); opacity:0.6;}
+  .muted-price-box{opacity:0.5; filter:grayscale(0.4);}
+  .muted-options{opacity:0.5; filter:grayscale(0.4); pointer-events:none;}
+  .add-cart-btn:disabled{background:var(--line); color:var(--gray); cursor:not-allowed;}
+  .add-cart-btn:disabled:hover{background:var(--line);}
+
   .detail-panel{
     background:var(--bg-card); border:1px solid var(--line); border-radius:10px;
     padding:22px; position:sticky; top:90px;
@@ -387,46 +399,51 @@
   }
   /* ---------- FONDO ANIMADO (burbujas rojas difuminadas) ---------- */
   .bg-blobs{
-    position:fixed; inset:0; overflow:hidden; z-index:-1; pointer-events:none;
+    position:fixed; inset:0; overflow:hidden; z-index:0; pointer-events:none;
   }
   .blob{
     position:absolute; border-radius:50%;
-    filter:blur(90px); opacity:0.28;
+    filter:blur(80px); opacity:0.35; will-change:transform;
   }
   .blob1{
-    width:420px; height:420px; top:-120px; left:-100px;
-    background:var(--red); animation:float1 24s ease-in-out infinite;
+    width:480px; height:480px; top:-140px; left:-120px;
+    background:var(--red); animation:float1 22s ease-in-out infinite;
   }
   .blob2{
-    width:360px; height:360px; bottom:-100px; right:-80px;
-    background:var(--red-dim); animation:float2 28s ease-in-out infinite;
+    width:420px; height:420px; bottom:-120px; right:-100px;
+    background:var(--red-dim); opacity:0.4; animation:float2 26s ease-in-out infinite;
   }
   .blob3{
-    width:300px; height:300px; top:45%; left:65%;
-    background:var(--red); opacity:0.18; animation:float3 32s ease-in-out infinite;
+    width:340px; height:340px; top:40%; left:62%;
+    background:var(--red); opacity:0.25; animation:float3 30s ease-in-out infinite;
   }
   .blob4{
-    width:260px; height:260px; top:15%; left:35%;
-    background:var(--red-dim); opacity:0.16; animation:float4 20s ease-in-out infinite;
+    width:300px; height:300px; top:10%; left:30%;
+    background:var(--red-dim); opacity:0.22; animation:float4 18s ease-in-out infinite;
   }
   @keyframes float1{
     0%,100%{ transform:translate(0,0) scale(1); }
-    50%{ transform:translate(140px,90px) scale(1.1); }
+    50%{ transform:translate(160px,110px) scale(1.15); }
   }
   @keyframes float2{
     0%,100%{ transform:translate(0,0) scale(1); }
-    50%{ transform:translate(-110px,-70px) scale(1.15); }
+    50%{ transform:translate(-130px,-90px) scale(1.2); }
   }
   @keyframes float3{
     0%,100%{ transform:translate(0,0) scale(1); }
-    50%{ transform:translate(-90px,70px) scale(0.9); }
+    50%{ transform:translate(-110px,90px) scale(0.85); }
   }
   @keyframes float4{
     0%,100%{ transform:translate(0,0) scale(1); }
-    50%{ transform:translate(80px,-60px) scale(1.2); }
+    50%{ transform:translate(100px,-80px) scale(1.25); }
   }
   @media (prefers-reduced-motion: reduce){
     .blob{ animation:none !important; }
+  }
+
+  /* Todo el contenido real va por encima del fondo animado */
+  header, .view, footer, .cart-overlay, .cart-panel, .checkout-overlay, .checkout-modal{
+    position:relative; z-index:1;
   }
 
 </style>
@@ -887,20 +904,23 @@ function renderProductList(){
   }
 
   filtered.forEach(p => {
-    const minPrice = Math.min(...p.options.map(o => o.price));
     const iconHtml = p.image
       ? `<img src="${p.image}" alt="${p.name}">`
       : p.name.substring(0,2).toUpperCase();
+    const outOfStock = p.inStock === false;
     const row = document.createElement("div");
-    row.className = "product-row" + (p.id === selectedProductId ? " selected" : "");
+    row.className = "product-row"
+      + (p.id === selectedProductId ? " selected" : "")
+      + (outOfStock ? " out-of-stock" : "");
     row.onclick = () => selectProduct(p.id);
     row.innerHTML = `
       <div class="row-icon">${iconHtml}</div>
       <div class="row-info">
         <h4>${p.name}</h4>
-        <div class="row-meta">${p.options.length} ${p.options.length === 1 ? "opción" : "opciones"}</div>
+        ${outOfStock
+          ? '<div class="stock-badge">Agotado</div>'
+          : `<div class="row-meta">${p.options.length} ${p.options.length === 1 ? "opción" : "opciones"}</div>`}
       </div>
-      <div class="row-price">${formatPrice(minPrice)}</div>
     `;
     list.appendChild(row);
   });
@@ -932,12 +952,13 @@ function renderDetail(){
     return;
   }
 
+  const outOfStock = product.inStock === false;
   const opt = product.options[selectedOptionIndex];
 
   let optionsHtml = "";
   product.options.forEach((o, i) => {
     optionsHtml += `
-      <div class="option-row ${i === selectedOptionIndex ? "selected" : ""}" onclick="selectOption(${i})">
+      <div class="option-row ${i === selectedOptionIndex ? "selected" : ""}" onclick="${outOfStock ? "" : `selectOption(${i})`}">
         <div class="option-left">
           <div class="radio-dot"></div>
           <div class="option-name">${o.label}</div>
@@ -948,21 +969,22 @@ function renderDetail(){
   });
 
   panel.innerHTML = `
-    <div class="detail-label">${opt.label === product.options[product.options.length-1].label ? "Garantía de " + opt.label : "Detalle del servicio"}</div>
-    ${product.image ? `<img class="detail-image" src="${product.image}" alt="${product.name}">` : ""}
+    <div class="detail-label">${outOfStock ? "" : (opt.label === product.options[product.options.length-1].label ? "Garantía de " + opt.label : "Detalle del servicio")}</div>
+    ${product.image ? `<img class="detail-image${outOfStock ? " muted-image" : ""}" src="${product.image}" alt="${product.name}">` : ""}
     <div class="detail-title">${product.name}</div>
+    ${outOfStock ? '<div class="stock-badge detail-stock-badge">Agotado</div>' : ""}
     <div class="detail-desc">${product.desc}</div>
 
-    <div class="price-box">
+    <div class="price-box${outOfStock ? " muted-price-box" : ""}">
       <div class="pb-label">Precio</div>
       <div class="pb-price">${formatPrice(opt.price)}</div>
       <div class="pb-duration">${opt.label}</div>
     </div>
 
-    <div class="option-list">${optionsHtml}</div>
+    <div class="option-list${outOfStock ? " muted-options" : ""}">${optionsHtml}</div>
 
-    <button class="add-cart-btn" onclick="addToCart(${product.id}, ${selectedOptionIndex})">
-      Agregar ${formatPrice(opt.price)} al carrito
+    <button class="add-cart-btn" ${outOfStock ? "disabled" : `onclick="addToCart(${product.id}, ${selectedOptionIndex})"`}>
+      ${outOfStock ? "Agotado — no disponible" : "Agregar " + formatPrice(opt.price) + " al carrito"}
     </button>
   `;
 }
