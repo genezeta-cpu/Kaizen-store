@@ -5,7 +5,7 @@
       "name": "Adobe Creative Cloud - Completo",
       "category": "Productividad",
       "desc": "Acceso a todas las apps de Adobe: Photoshop, Illustrator, Premiere, After Effects y más.",
-      "image": "",
+      "image": "/images/uploads/vecteezy_microsoft-365-logo-vector-vector-microsoft-365-editorial_.jpg",
       "options": [
         {
           "label": "1 Mes",
@@ -20,7 +20,7 @@
           "price": 0
         }
       ],
-      "inStock": true
+      "inStock": false
     },
     {
       "id": 2,
