@@ -12,7 +12,7 @@
           "price": 3400
         }
       ],
-      "inStock": false
+      "inStock": true
     },
     {
       "id": 2,
